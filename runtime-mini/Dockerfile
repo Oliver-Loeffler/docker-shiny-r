@@ -123,6 +123,7 @@ RUN Rscript -e 'cat(.libPaths(), sep="\n")' | while read -r libpath; do \
 FROM scratch AS assembly
 COPY --from=trimmed / /
 COPY --from=package_builder /usr/share/R/library /usr/share/R/library
+RUN rm -rf /usr/lib64/R/library/tcltk/;
 
 FROM scratch
 COPY --from=assembly / /
