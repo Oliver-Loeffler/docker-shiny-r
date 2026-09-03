@@ -6,6 +6,7 @@ RUN microdnf install -y \
       --setopt=tsflags=nodocs \
       --enablerepo=powertools \
       R-core; \
+    microdnf install -y libuv; \
     microdnf remove epel-release; \
     microdnf clean all; \
     rm -rf /var/cache/dnf /var/log/dnf* /var/log/yum* /var/cache/yum;
