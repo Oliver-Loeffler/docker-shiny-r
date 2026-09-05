@@ -14,8 +14,6 @@ RUN dnf install -y shadow-utils; \
     dnf clean all; \
     rm -rf /var/cache/dnf /var/log/dnf* /var/log/yum* /var/cache/yum;
 
-
-
 RUN mkdir -p /mnt/rootfs && \
     dnf install \
         --installroot /mnt/rootfs \
@@ -44,15 +42,21 @@ RUN mkdir -p /mnt/rootfs/tmp /mnt/rootfs/scripts && \
 FROM scratch
 COPY --from=builder /mnt/rootfs/ /
 
+#
+#
+#
 ARG APP_HOME=/app
 ARG APP_R_HOME=.R
 ARG APP_R_LIBRARY=4.5/library
 ARG R_LIBS_USER=${APP_HOME}/${APP_R_HOME}/${APP_R_LIBRARY}
+ARG R_CRAN_MIRROR="https://cloud.r-project.org"
+ENV R_CRAN_MIRROR=${R_CRAN_MIRROR}
 RUN mkdir -p "${R_LIBS_USER}" && \
     chown -R app:app "${APP_HOME}/${APP_R_HOME}" && \
     printf 'R_LIBS_USER=%s\n' "${R_LIBS_USER}" >> "$(R RHOME)/etc/Renviron.site"; \
+    printf 'R_CRAN_MIRROR=%s\n' "${R_CRAN_MIRROR}" >> "$(R RHOME)/etc/Renviron.site"; \
     cat "$(R RHOME)/etc/Renviron.site"; \
-    printf 'options(repos = c(CRAN = "https://cloud.r-project.org"))\n' \
+    printf 'options(repos = c(CRAN = Sys.getenv("R_CRAN_MIRROR")))\n' \
         >> "$(R RHOME)/etc/Rprofile.site"; \
     cat "$(R RHOME)/etc/Rprofile.site";
 
