@@ -1,4 +1,4 @@
-FROM rockylinux/rockylinux:8.9-minimal AS trimmed
+FROM rockylinux/rockylinux:8.10-minimal AS trimmed
 
 RUN microdnf install -y epel-release;
 RUN microdnf install -y \
