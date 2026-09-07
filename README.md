@@ -5,7 +5,7 @@
 
 Builder: ~ 1.2 GB
 Runtime: ~ 204 MB (!)
-Shiny:   ~ 340 MB (no support for Pandoc, Rmarkdown)
+Shiny:   ~ 303 MB (!) (no support for Pandoc, Rmarkdown)
 
 ## R 4.6.x (Planning)
  * docker pull rockylinux/rockylinux:10-ubi-micro

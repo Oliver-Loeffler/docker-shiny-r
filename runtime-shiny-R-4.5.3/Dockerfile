@@ -64,7 +64,11 @@ RUN curl -LO "https://download3.rstudio.org/centos8/x86_64/shiny-server-1.5.23.1
      find /mnt/rootfs/opt/shiny-server/ -xdev -name '*.so*' -type f -exec strip --strip-unneeded {} \; 2>/dev/null;
 
 ADD ./cleanup-shiny.sh /cleanup-shiny.sh
+RUN /bin/bash /cleanup-shiny.sh
+
 ADD cleanup-image.sh /cleanup-image.sh
+RUN /bin/bash /cleanup-image.sh
+
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 RUN mkdir -p /mnt/rootfs/var/lib/shiny-server/bookmarks \
