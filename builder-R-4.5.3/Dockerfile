@@ -26,7 +26,7 @@ RUN mkdir -p /mnt/rootfs && \
         --enablerepo=powertools \
         R-4.5.3-1.el8 \
         cmake \
-        glibc-langpack-en \
+        glibc-langpack-minimal \
         libuv \
         libuv-devel \
         bash \

@@ -3,7 +3,7 @@ FROM rockylinux/rockylinux:8.10 AS builder
 
 RUN dnf install -y epel-release && dnf clean all
 
-RUN dnf install -y shadow-utils; \
+RUN dnf install -y shadow-utils binutils findutils; \
     mkdir -p "/app"; \
     groupadd --gid 1000 app; \
     useradd --uid 1000 --gid 1000 \
@@ -46,7 +46,25 @@ RUN curl -LO "https://download3.rstudio.org/centos8/x86_64/shiny-server-1.5.23.1
           -y shiny-server-1.5.23.1030-x86_64.rpm \
   && dnf --installroot /mnt/rootfs clean all \
   && rm -rf /mnt/rootfs/var/cache/* /mnt/rootfs/var/log/* \
-            /mnt/rootfs/usr/share/doc/* /mnt/rootfs/usr/share/man/*;
+            /mnt/rootfs/usr/share/doc/* /mnt/rootfs/usr/share/man/* \
+  && rm -rf /mnt/rootfs/opt/shiny-server/ext/pandoc/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/ext/node/bin/node; \
+     rm -rf /mnt/rootfs/opt/shiny-server/ext/node/include/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/ext/node/lib/; \
+     rm -f /mnt/rootfs/opt/shiny-server/ext/node/*.md; \
+     rm -f /mnt/rootfs/opt/shiny-server/ext/node/LIC*; \
+     rm -rf /mnt/rootfs/opt/shiny-server/ext/node/share/; \
+     rm -rf /mnt/rootfs/mnt/rootfs/opt/shiny-server/python/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/test/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/manual.test; \
+     rm -rf /mnt/rootfs/opt/shiny-server/config/init.d/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/config/systemd/; \
+     rm -rf /mnt/rootfs/opt/shiny-server/config/upstart/; \
+     strip --strip-all /mnt/rootfs/opt/shiny-server/ext/node/bin/shiny-server; \
+     find /mnt/rootfs/opt/shiny-server/ -xdev -name '*.so*' -type f -exec strip --strip-unneeded {} \; 2>/dev/null;
+
+ADD ./cleanup-shiny.sh /cleanup-shiny.sh
+ADD cleanup-image.sh /cleanup-image.sh
 
 ADD ./shiny-server.conf /etc/shiny-server/shiny-server.conf
 RUN mkdir -p /mnt/rootfs/var/lib/shiny-server/bookmarks \
@@ -74,8 +92,8 @@ ARG R_LIBS_USER=${APP_HOME}/${APP_R_HOME}/${APP_R_LIBRARY}
 ARG SCRIPTS_USER=${APP_HOME}/.scripts/
 ARG R_CRAN_MIRROR="https://cloud.r-project.org"
 ENV R_CRAN_MIRROR=${R_CRAN_MIRROR} \
-    LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
 
 #
 #ADD cleanup-library.sh /app/.scripts/cleanup-library.sh

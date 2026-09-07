@@ -25,7 +25,7 @@ RUN mkdir -p /mnt/rootfs && \
         --nodocs -y \
         --enablerepo=powertools \
         R-core-4.5.3-1.el8 \
-        glibc-langpack-en \
+        glibc-minimal-langpack \
         bash \
         coreutils-single \
     && dnf --installroot /mnt/rootfs clean all \
@@ -55,8 +55,8 @@ ARG APP_R_LIBRARY=4.5/library
 ARG R_LIBS_USER=${APP_HOME}/${APP_R_HOME}/${APP_R_LIBRARY}
 ARG R_CRAN_MIRROR="https://cloud.r-project.org"
 ENV R_CRAN_MIRROR=${R_CRAN_MIRROR} \
-    LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
 
 RUN mkdir -p "${R_LIBS_USER}" && \
     chown -R app:app "${APP_HOME}/${APP_R_HOME}" && \
